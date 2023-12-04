@@ -2,6 +2,7 @@ package com.dimlab.mapplace;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -70,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        verifyStoragePermissions(this);
+
         // Обработчик входа в приложение
         Button mEnter = findViewById(R.id.btm_enter);
         mEnter.setOnClickListener(new View.OnClickListener()
@@ -77,15 +80,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View v)
             {
-                File mFile = new File("hash.txt");
+                File mFile = new File(getFilesDir(), "hash.bin");
                 if(!mFile.exists())
                 {
-                    try
-                    {
-                        mFile.createNewFile();
-                    } catch (IOException e) {
-                        writeHashToFile(getHash("Turist"));
-                    }
+                    writeHashToFile(getHash("tur"));
                 }
 
                 // Чтение пароля из EditText
@@ -101,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mEnterScreen.setVisibility(View.INVISIBLE);
                     RelativeLayout mSearch = findViewById(R.id.search_layout);
                     mSearch.setVisibility(View.VISIBLE);
-                    Toast.makeText(MainActivity.this, "Welcome!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Добро пожаловать!!", Toast.LENGTH_SHORT).show();
                 } else {
                     ConstraintLayout mEnterScreen = findViewById(R.id.enter_screen);
                     mEnterScreen.setVisibility(View.VISIBLE);
@@ -124,8 +122,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         sb.append(String.format("%02x", b));
                     }
                     return sb.toString();
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
+                } catch (NoSuchAlgorithmException e)
+                {
+                    Toast.makeText(MainActivity.this, "ERROR: " + e, Toast.LENGTH_SHORT).show();
+                    //e.printStackTrace();
                     return null;
                 }
             }
@@ -135,13 +135,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             {
                 try
                 {
-                    File file = new File(getFilesDir(), "hash.txt");
+                    File file = new File(getFilesDir(),"hash.bin");
                     FileOutputStream outputStream = new FileOutputStream(file);
                     BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream));
+
                     writer.write(hash);
                     writer.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Toast.makeText(MainActivity.this, "ERROR: " + e, Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -150,14 +151,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             {
                 try
                 {
-                    File file = new File(getFilesDir(), "hash.txt");
+                    File file = new File(getFilesDir(), "hash.bin");
                     InputStream inputStream = new FileInputStream(file);
                     BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
                     String hash = reader.readLine();
                     reader.close();
                     return hash;
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Toast.makeText(MainActivity.this, "ERROR: " + e, Toast.LENGTH_SHORT).show();
                     return null;
                 }
             }
@@ -205,10 +206,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (hash.equals(expectedHash))
                 {
                     // Чтение пароля из EditText
-                    final EditText mNewpass = findViewById(R.id.oldpass);
+                    final EditText mNewpass = findViewById(R.id.newpass);
                     input = mNewpass.getText().toString();
                     // Хэширование и сохранение пароля
                     writeHashToFile(getHash(input));
+                    // Возвращаемся к экрану авторизации
+                    ConstraintLayout mEnterScreen = findViewById(R.id.enter_screen);
+                    mEnterScreen.setVisibility(View.VISIBLE);
+                    ConstraintLayout mChangePassword = findViewById(R.id.change_passord);
+                    mChangePassword.setVisibility(View.INVISIBLE);
+                }else{
+                    Toast.makeText(MainActivity.this, "Пароль не верный", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -226,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                     return sb.toString();
                 } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
+                    Toast.makeText(MainActivity.this, "ERROR: " + e, Toast.LENGTH_SHORT).show();
                     return null;
                 }
             }
@@ -236,13 +244,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             {
                 try
                 {
-                    File file = new File(getFilesDir(), "hash.txt");
-                    FileOutputStream outputStream = new FileOutputStream(file);
+                    File file = new File(getFilesDir(), "hash.bin");
+                    FileOutputStream outputStream = new FileOutputStream(file, false);
                     BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream));
                     writer.write(hash);
                     writer.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Toast.makeText(MainActivity.this, "ERROR: " + e, Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -251,14 +259,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             {
                 try
                 {
-                    File file = new File(getFilesDir(), "hash.txt");
+                    File file = new File(getFilesDir(), "hash.bin");
                     InputStream inputStream = new FileInputStream(file);
                     BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
                     String hash = reader.readLine();
                     reader.close();
                     return hash;
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Toast.makeText(MainActivity.this, "ERROR: " + e, Toast.LENGTH_SHORT).show();
                     return null;
                 }
             }
@@ -297,6 +305,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+
         // Обработчик нажатия на кнопку поиска текущего местоположения
         //ImageView mGps = findViewById(R.id.ic_gps);
         ImageView mGps = findViewById(R.id.ic_gps);
@@ -306,6 +315,27 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 getCurrentLocation();
             }
         });
+    }
+
+    // Storage Permissions
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+
+    public static void verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
     }
 
     // Получение текущего местоположения

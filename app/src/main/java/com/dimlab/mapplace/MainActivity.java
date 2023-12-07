@@ -335,6 +335,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+        // Обработчик взаимодействий с фото
+
 
         // Обработчик нажатия на кнопку поиска текущего местоположения
         //ImageView mGps = findViewById(R.id.ic_gps);
@@ -425,7 +427,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public boolean onMarkerClick(@NonNull Marker marker)
             {
-
+                ConstraintLayout mPicScreen = findViewById(R.id.pic_screen);
+                mPicScreen.setVisibility(View.VISIBLE);
+                RelativeLayout mSearch = findViewById(R.id.search_layout);
+                mSearch.setVisibility(View.INVISIBLE);
                 /*ImageView mImage;
                 mImage = (ImageView) findViewById(R.id.users_picture);
                 mImage.setImageBitmap(BitmapFactory.decodeFile());*/
@@ -433,6 +438,33 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 /*Toast.makeText(getApplicationContext(),
                         "Вы нажали на метку " + marker.getTitle(),
                         Toast.LENGTH_SHORT).show();*/
+
+                // Обработчик нажатия на кнопку "Удалить маркер"
+                Button mDelPic = findViewById(R.id.btm_del_marker);
+
+                mDelPic.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mMarker.remove();
+                        ConstraintLayout mPicScreen = findViewById(R.id.pic_screen);
+                        mPicScreen.setVisibility(View.INVISIBLE);
+                        RelativeLayout mSearch = findViewById(R.id.search_layout);
+                        mSearch.setVisibility(View.VISIBLE);
+                    }
+                });
+
+                // Обработчик нажатия на кнопку "Закрыть фото"
+                Button mClose = findViewById(R.id.btm_close_pic);
+                mClose.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        ConstraintLayout mPicScreen = findViewById(R.id.pic_screen);
+                        mPicScreen.setVisibility(View.INVISIBLE);
+                        RelativeLayout mSearch = findViewById(R.id.search_layout);
+                        mSearch.setVisibility(View.VISIBLE);
+                    }
+                });
                 return false;
             }
         });
@@ -446,18 +478,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setMessage("Установить метку?");
                 builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // Здесь выполняются действия по подтверждению
-
+                    public void onClick(DialogInterface dialog, int id)
+                    {
                         // Открытие галереи
                         pickImageFromGallery();
-
-                        // Создаем новую метку
-                       /* mMarker = mMap.addMarker(new MarkerOptions()
-                                .position(latLng)
-                                .title("Место")
-                                .snippet("Описание места")
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));*/
                     }
                 });
                 builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {

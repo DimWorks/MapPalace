@@ -6,40 +6,36 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <fragment
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/map_screen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MapActivity"
-        tools:ignore="MissingClass"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="-195dp" />
+        android:background="@drawable/gradient_background"
+        android:visibility="invisible">
 
-    <Button
-        android:id="@+id/btmMap"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="-200dp"
-        android:text="Map"
-        android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/map"
-        app:layout_constraintEnd_toStartOf="@+id/map"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/map"
-        tools:ignore="MissingConstraints" />
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".MapActivity"
+            tools:ignore="MissingClass"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="-195dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <RelativeLayout
         android:id="@+id/search_layout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="50dp"
         android:background="#fff"
         android:elevation="10dp"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/map"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints">
 
         <ImageView
@@ -76,27 +72,29 @@
         android:layout_marginBottom="600dp"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_gps"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
     <ImageView
         android:id="@+id/ic_gallery"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="4dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_gallery"
-        tools:layout_editor_absoluteY="149dp"
-        app:layout_constraintTop_toBottomOf="@+id/ic_gps"/>
+        app:layout_constraintTop_toBottomOf="@+id/ic_gps"
+        app:srcCompat="@android:drawable/ic_menu_gallery" />
 
     <Button
         android:id="@+id/search_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Поиск"
-        android:visibility="invisible"
+        android:visibility="gone"
         tools:layout_editor_absoluteX="322dp"
-        tools:layout_editor_absoluteY="145dp" />
+        tools:layout_editor_absoluteY="145dp"
+        tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/btm_gps"
@@ -146,8 +144,8 @@
             android:layout_height="50dp"
             android:layout_marginBottom="221dp"
             android:background="#FFFFFF"
-            android:paddingLeft="15dp"
             android:hint="password"
+            android:paddingLeft="15dp"
             android:textColor="#918F8F"
             android:textSize="20dp"
             android:textStyle="bold"
@@ -205,7 +203,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.491"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView" />
+            app:layout_constraintTop_toBottomOf="@+id/my_logo" />
 
         <EditText
             android:id="@+id/newpass"
@@ -236,7 +234,7 @@
             app:srcCompat="@drawable/change_password" />
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/my_logo"
             android:layout_width="105dp"
             android:layout_height="110dp"
             android:layout_marginTop="28dp"
@@ -270,6 +268,30 @@
             app:layout_constraintTop_toBottomOf="@+id/btm_change" />
 
 
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/pic_screen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/gradient_background"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent">
+
+
+        <ImageView
+            android:id="@+id/users_picture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/logo_black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

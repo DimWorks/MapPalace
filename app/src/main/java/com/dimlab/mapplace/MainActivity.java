@@ -3,9 +3,12 @@ package com.dimlab.mapplace;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
@@ -43,7 +46,9 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -80,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View v)
             {
-                File mFile = new File(getFilesDir(), "hash.bin");
+                File mFile = new File(getFilesDir(), "hash.txt");
                 if(!mFile.exists())
                 {
                     writeHashToFile(getHash("tur"));
@@ -95,17 +100,49 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 if (hash.equals(expectedHash))
                 {
+                    ConstraintLayout mMapScreen = findViewById(R.id.map_screen);
+                    mMapScreen.setVisibility(View.VISIBLE);
                     ConstraintLayout mEnterScreen = findViewById(R.id.enter_screen);
                     mEnterScreen.setVisibility(View.INVISIBLE);
                     RelativeLayout mSearch = findViewById(R.id.search_layout);
                     mSearch.setVisibility(View.VISIBLE);
                     Toast.makeText(MainActivity.this, "Добро пожаловать!!", Toast.LENGTH_SHORT).show();
                 } else {
+                    ConstraintLayout mMapScreen = findViewById(R.id.map_screen);
+                    mMapScreen.setVisibility(View.INVISIBLE);
                     ConstraintLayout mEnterScreen = findViewById(R.id.enter_screen);
                     mEnterScreen.setVisibility(View.VISIBLE);
                     RelativeLayout mSearch = findViewById(R.id.search_layout);
                     mSearch.setVisibility(View.INVISIBLE);
                     Toast.makeText(MainActivity.this, "Пароль не верный", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            private void StartApp()
+            {
+                try {
+                    File file = new File(getFilesDir(), "hash.txt");
+                    //создаем объект FileReader для объекта File
+                    FileReader fr = new FileReader(file);
+                    //создаем BufferedReader с существующего FileReader для построчного считывания
+                    BufferedReader reader = new BufferedReader(fr);
+                    // считаем сначала первую строку, где храниться пароль
+                    String line = reader.readLine();
+                    while (line != null)
+                    {
+                        // Считывание строки
+                        line = reader.readLine();
+                        // Создание геометки
+                        /*mMarker = mMap.addMarker(new MarkerOptions()
+                                .position(latLng)
+                                .title()
+                                .snippet()
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));*/
+                    }
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }  catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
             }
 
@@ -135,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             {
                 try
                 {
-                    File file = new File(getFilesDir(),"hash.bin");
+                    File file = new File(getFilesDir(),"hash.txt");
                     FileOutputStream outputStream = new FileOutputStream(file);
                     BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream));
 
@@ -151,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             {
                 try
                 {
-                    File file = new File(getFilesDir(), "hash.bin");
+                    File file = new File(getFilesDir(), "hash.txt");
                     InputStream inputStream = new FileInputStream(file);
                     BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
                     String hash = reader.readLine();
@@ -192,7 +229,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // Обработчик нажатия на кнопку смены пароля
         Button mChange = findViewById(R.id.btm_change);
-        mChange.setOnClickListener(new View.OnClickListener() {
+        mChange.setOnClickListener(new View.OnClickListener()
+        {
             @Override
             public void onClick(View v)
             {
@@ -244,7 +282,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             {
                 try
                 {
-                    File file = new File(getFilesDir(), "hash.bin");
+                    File file = new File(getFilesDir(), "hash.txt");
                     FileOutputStream outputStream = new FileOutputStream(file, false);
                     BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream));
                     writer.write(hash);
@@ -259,7 +297,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             {
                 try
                 {
-                    File file = new File(getFilesDir(), "hash.bin");
+                    File file = new File(getFilesDir(), "hash.txt");
                     InputStream inputStream = new FileInputStream(file);
                     BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
                     String hash = reader.readLine();
@@ -280,16 +318,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Инициализация FusedLocationProviderClient для получения местоположения
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        // Обработчик нажатия на кнопку добавления метки
-        Button addMarkerButton = findViewById(R.id.btmMap);
-        addMarkerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v)
-            {
-                pickImageFromGallery();
-            }
-        });
-
         // Инициализация поля ввода для поиска адреса
         searchEditText = findViewById(R.id.input_search);
 
@@ -297,9 +325,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Button searchButton = findViewById(R.id.search_button);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 String address = searchEditText.getText().toString();
-                if (!address.isEmpty()) {
+                if (!address.isEmpty())
+                {
                     searchAddress(address);
                 }
             }
@@ -308,13 +338,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // Обработчик нажатия на кнопку поиска текущего местоположения
         //ImageView mGps = findViewById(R.id.ic_gps);
-        ImageView mGps = findViewById(R.id.ic_gps);
+       /* ImageView mGps = findViewById(R.id.ic_gps);
         mGps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getCurrentLocation();
             }
-        });
+        });*/
     }
 
     // Storage Permissions
@@ -395,10 +425,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public boolean onMarkerClick(@NonNull Marker marker)
             {
+
+                /*ImageView mImage;
+                mImage = (ImageView) findViewById(R.id.users_picture);
+                mImage.setImageBitmap(BitmapFactory.decodeFile());*/
                 // Действия при нажатии на метку
-                Toast.makeText(getApplicationContext(),
+                /*Toast.makeText(getApplicationContext(),
                         "Вы нажали на метку " + marker.getTitle(),
-                        Toast.LENGTH_SHORT).show();
+                        Toast.LENGTH_SHORT).show();*/
                 return false;
             }
         });
@@ -409,12 +443,31 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onMapClick(LatLng latLng)
             {
 
-                // Создаем новую метку
-                mMarker = mMap.addMarker(new MarkerOptions()
-                        .position(latLng)
-                        .title("Место")
-                        .snippet("Описание места")
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setMessage("Установить метку?");
+                builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // Здесь выполняются действия по подтверждению
+
+                        // Открытие галереи
+                        pickImageFromGallery();
+
+                        // Создаем новую метку
+                       /* mMarker = mMap.addMarker(new MarkerOptions()
+                                .position(latLng)
+                                .title("Место")
+                                .snippet("Описание места")
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));*/
+                    }
+                });
+                builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // Здесь выполняются действия по отмене
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
             }
         });
 
@@ -480,11 +533,33 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         startActivityForResult(intent, REQUEST_PICK_IMAGE);
     }
 
-
-
-    // Обработка выбора фото из галереи
+    // Получение пути выбранной фотографии в методе onActivityResult
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_PICK_IMAGE && resultCode == RESULT_OK && null != data) {
+            Uri selectedImage = data.getData();
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+            Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+            cursor.moveToFirst();
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
+
+            mMarker = mMap.addMarker(new MarkerOptions()
+                    .position(mMap.getCameraPosition().target)
+                    .title("Место")
+                    .snippet(picturePath)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+
+            // В переменной picturePath будет лежать путь до выбранной фотографии
+        }
+    }
+
+    // Обработка выбора фото из галереи
+    /*@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_PICK_IMAGE && resultCode == RESULT_OK && data != null) {
             Uri selectedImageUri = data.getData();
@@ -494,7 +569,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 // Добавление метки на карту с ссылкой на фото
                 /*if (mMarker != null) {
                     mMarker.remove();
-                }*/
+                }*
                 mMarker = mMap.addMarker(new MarkerOptions()
                         .position(mMap.getCameraPosition().target)
                         .title("Место")
@@ -504,6 +579,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 }
 

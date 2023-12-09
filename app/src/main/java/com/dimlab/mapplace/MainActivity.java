@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mEnterScreen.setVisibility(View.VISIBLE);
                     RelativeLayout mSearch = findViewById(R.id.search_layout);
                     mSearch.setVisibility(View.INVISIBLE);
-                    Toast.makeText(MainActivity.this, "Пароль не верный", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Пароль неверный", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -254,7 +254,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     ConstraintLayout mChangePassword = findViewById(R.id.change_passord);
                     mChangePassword.setVisibility(View.INVISIBLE);
                 }else{
-                    Toast.makeText(MainActivity.this, "Пароль не верный", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Пароль неверный", Toast.LENGTH_SHORT).show();
                 }
             }
 

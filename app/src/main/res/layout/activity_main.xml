@@ -128,10 +128,22 @@
             app:srcCompat="@drawable/logo_black" />
 
         <ImageView
+            android:id="@+id/mapalace"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/mappalace" />
+
+        <ImageView
             android:id="@+id/imageView2"
             android:layout_width="422dp"
             android:layout_height="262dp"
             android:layout_marginBottom="253dp"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -144,7 +156,7 @@
             android:layout_height="50dp"
             android:layout_marginBottom="221dp"
             android:background="#FFFFFF"
-            android:hint="password"
+            android:hint="пароль"
             android:paddingLeft="15dp"
             android:textColor="#918F8F"
             android:textSize="20dp"

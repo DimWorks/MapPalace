@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -17,11 +18,16 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.InputType;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -78,8 +84,31 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         verifyStoragePermissions(this);
 
-        // Обработчик входа в приложение
+
+
+        // Чтение пароля из EditText
+        final EditText mPassword = findViewById(R.id.password);
+        mPassword.setImeOptions(EditorInfo.IME_ACTION_SEND);
+        mPassword.setRawInputType(InputType.TYPE_CLASS_TEXT);
         Button mEnter = findViewById(R.id.btm_enter);
+
+        mPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEND) {
+                    mEnter.performClick(); // Имитация нажатия на кнопку
+
+                    // Скрыть клавиатуру
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(mPassword.getWindowToken(), 0);
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        // Обработчик входа в приложение
+
         mEnter.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -91,8 +120,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     writeHashToFile(getHash("tur"));
                 }
 
-                // Чтение пароля из EditText
-                final EditText mPassword = findViewById(R.id.password);
                 String input = mPassword.getText().toString();
                 // Хэширование пароля
                 String hash = getHash(input);
@@ -107,6 +134,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     RelativeLayout mSearch = findViewById(R.id.search_layout);
                     mSearch.setVisibility(View.VISIBLE);
                     Toast.makeText(MainActivity.this, "Добро пожаловать!!", Toast.LENGTH_SHORT).show();
+                    //StartApp();
                 } else {
                     ConstraintLayout mMapScreen = findViewById(R.id.map_screen);
                     mMapScreen.setVisibility(View.INVISIBLE);
@@ -121,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             private void StartApp()
             {
                 try {
-                    File file = new File(getFilesDir(), "hash.txt");
+                    File file = new File(getFilesDir(), "data.txt");
                     //создаем объект FileReader для объекта File
                     FileReader fr = new FileReader(file);
                     //создаем BufferedReader с существующего FileReader для построчного считывания
@@ -131,13 +159,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     while (line != null)
                     {
                         // Считывание строки
+                        String[] parts = line.split(", ");
+                        double latitude = Double.parseDouble(parts[0].trim());
+                        double longitude = Double.parseDouble(parts[1].trim());
+                        LatLng markerLatLng = new LatLng(latitude, longitude);
+                        mMap.addMarker(new MarkerOptions().position(markerLatLng)
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
                         line = reader.readLine();
-                        // Создание геометки
-                        /*mMarker = mMap.addMarker(new MarkerOptions()
-                                .position(latLng)
-                                .title()
-                                .snippet()
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));*/
                     }
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
@@ -227,6 +255,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+        // Чтение пароля из EditText
+        final EditText mOldpass = findViewById(R.id.oldpass);
+        mOldpass.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        mPassword.setRawInputType(InputType.TYPE_CLASS_TEXT);
+        final EditText mNewpass = findViewById(R.id.newpass);
+        mNewpass.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        mPassword.setRawInputType(InputType.TYPE_CLASS_TEXT);
+
         // Обработчик нажатия на кнопку смены пароля
         Button mChange = findViewById(R.id.btm_change);
         mChange.setOnClickListener(new View.OnClickListener()
@@ -234,8 +270,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View v)
             {
-                // Чтение пароля из EditText
-                final EditText mOldpass = findViewById(R.id.oldpass);
+
                 String input = mOldpass.getText().toString();
                 // Хэширование пароля
                 String hash = getHash(input);
@@ -244,7 +279,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (hash.equals(expectedHash))
                 {
                     // Чтение пароля из EditText
-                    final EditText mNewpass = findViewById(R.id.newpass);
                     input = mNewpass.getText().toString();
                     // Хэширование и сохранение пароля
                     writeHashToFile(getHash(input));
@@ -321,8 +355,27 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Инициализация поля ввода для поиска адреса
         searchEditText = findViewById(R.id.input_search);
 
-        // Обработчик нажатия на кнопку поиска адреса
+        searchEditText.setImeOptions(EditorInfo.IME_ACTION_SEND);
+        searchEditText.setRawInputType(InputType.TYPE_CLASS_TEXT);
         Button searchButton = findViewById(R.id.search_button);
+
+        searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEND) {
+                    searchButton.performClick(); // Имитация нажатия на кнопку
+
+                    // Скрыть клавиатуру
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        // Обработчик нажатия на кнопку поиска адреса
+
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
@@ -334,19 +387,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
         });
-
-        // Обработчик взаимодействий с фото
-
-
-        // Обработчик нажатия на кнопку поиска текущего местоположения
-        //ImageView mGps = findViewById(R.id.ic_gps);
-       /* ImageView mGps = findViewById(R.id.ic_gps);
-        mGps.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getCurrentLocation();
-            }
-        });*/
     }
 
     // Storage Permissions
@@ -572,37 +612,38 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             mMarker = mMap.addMarker(new MarkerOptions()
                     .position(mMap.getCameraPosition().target)
-                    .title("Место")
                     .snippet(picturePath)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+
+
+            LatLng position = mMarker.getPosition();
+            String coordinates = position.latitude + ", " + position.longitude + ", " + picturePath;
+
+            writeToFile(coordinates);
+
+
+
+            /*Toast.makeText(getApplicationContext(),
+                    "Координаты: " + position.latitude + ", " + position.longitude,
+                    Toast.LENGTH_SHORT).show();*/
 
             // В переменной picturePath будет лежать путь до выбранной фотографии
         }
     }
 
-    // Обработка выбора фото из галереи
-    /*@Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    private void writeToFile(String input)
     {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_PICK_IMAGE && resultCode == RESULT_OK && data != null) {
-            Uri selectedImageUri = data.getData();
-            try {
-                Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImageUri));
+        try
+        {
+            File file = new File(getFilesDir(),"data.txt");
+            FileOutputStream outputStream = new FileOutputStream(file);
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream));
 
-                // Добавление метки на карту с ссылкой на фото
-                /*if (mMarker != null) {
-                    mMarker.remove();
-                }*
-                mMarker = mMap.addMarker(new MarkerOptions()
-                        .position(mMap.getCameraPosition().target)
-                        .title("Место")
-                        .snippet("Описание места")
-                        .icon( BitmapDescriptorFactory.fromBitmap(bitmap)));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            writer.write(input);
+            writer.close();
+        } catch (IOException e) {
+            Toast.makeText(MainActivity.this, "ERROR: " + e, Toast.LENGTH_SHORT).show();
         }
-    }*/
+    }
 }
 

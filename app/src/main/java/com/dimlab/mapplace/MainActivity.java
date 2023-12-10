@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -60,8 +61,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.security.MessageDigest;
+import java.util.HashMap;
 import java.util.List;
 import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -75,6 +78,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private EditText searchEditText;
 
+    private HashMap<Double, String> markersTable = new HashMap<>();
+    private HashMap<Double, Double> markersPosition = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -82,9 +87,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Проверка разрешения на доступ к хранилищу
         verifyStoragePermissions(this);
-
-
 
         // Чтение пароля из EditText
         final EditText mPassword = findViewById(R.id.password);
@@ -134,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     RelativeLayout mSearch = findViewById(R.id.search_layout);
                     mSearch.setVisibility(View.VISIBLE);
                     Toast.makeText(MainActivity.this, "Добро пожаловать!!", Toast.LENGTH_SHORT).show();
-                    //StartApp();
+                    StartApp();
                 } else {
                     ConstraintLayout mMapScreen = findViewById(R.id.map_screen);
                     mMapScreen.setVisibility(View.INVISIBLE);
@@ -150,6 +154,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             {
                 try {
                     File file = new File(getFilesDir(), "data.txt");
+                    if(!file.exists())
+                    {
+                        file.createNewFile();
+                    }
                     //создаем объект FileReader для объекта File
                     FileReader fr = new FileReader(file);
                     //создаем BufferedReader с существующего FileReader для построчного считывания
@@ -162,6 +170,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         String[] parts = line.split(", ");
                         double latitude = Double.parseDouble(parts[0].trim());
                         double longitude = Double.parseDouble(parts[1].trim());
+                        markersPosition.put(latitude, longitude);
+                        markersTable.put(latitude+longitude, parts[2]);
                         LatLng markerLatLng = new LatLng(latitude, longitude);
                         mMap.addMarker(new MarkerOptions().position(markerLatLng)
                                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
@@ -387,45 +397,29 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
         });
+
     }
 
-    // Storage Permissions
+    // Разрешения на хранение
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
-    public static void verifyStoragePermissions(Activity activity) {
-        // Check if we have write permission
+    public void verifyStoragePermissions(Activity activity)
+    {
+        // Проверка разрешения на запись
         int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            // We don't have permission so prompt the user
+        if (permission != PackageManager.PERMISSION_GRANTED)
+        {
+            // У нас нет разрешения, поэтому запросите у пользователя
             ActivityCompat.requestPermissions(
                     activity,
                     PERMISSIONS_STORAGE,
                     REQUEST_EXTERNAL_STORAGE
             );
-        }
-    }
-
-    // Получение текущего местоположения
-    private void getCurrentLocation() {
-        if (checkPermissions()) {
-            mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                @Override
-                public void onSuccess(Location location) {
-                    if (location != null)
-                    {
-                        LatLng currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f));
-                    }
-                }
-            });
-        }
-        else {
-            Toast.makeText(this, "ERROR", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -471,13 +465,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mPicScreen.setVisibility(View.VISIBLE);
                 RelativeLayout mSearch = findViewById(R.id.search_layout);
                 mSearch.setVisibility(View.INVISIBLE);
-                /*ImageView mImage;
+                mMarker = marker;
+                LatLng position = mMarker.getPosition();
+                ImageView mImage;
                 mImage = (ImageView) findViewById(R.id.users_picture);
-                mImage.setImageBitmap(BitmapFactory.decodeFile());*/
-                // Действия при нажатии на метку
-                /*Toast.makeText(getApplicationContext(),
-                        "Вы нажали на метку " + marker.getTitle(),
-                        Toast.LENGTH_SHORT).show();*/
+                mImage.setImageBitmap(BitmapFactory.decodeFile(
+                        markersTable.get(position.latitude + position.longitude)));
 
                 // Обработчик нажатия на кнопку "Удалить маркер"
                 Button mDelPic = findViewById(R.id.btm_del_marker);
@@ -485,11 +478,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mDelPic.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        LatLng position = mMarker.getPosition();
+                        // Удаление маркера из таблицы
+                        markersTable.remove(position.latitude + position.longitude);
+                        markersPosition.remove(position.latitude);
+                        // Удаление маркера с карты
                         mMarker.remove();
                         ConstraintLayout mPicScreen = findViewById(R.id.pic_screen);
                         mPicScreen.setVisibility(View.INVISIBLE);
                         RelativeLayout mSearch = findViewById(R.id.search_layout);
                         mSearch.setVisibility(View.VISIBLE);
+
                     }
                 });
 
@@ -617,30 +616,46 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
             LatLng position = mMarker.getPosition();
-            String coordinates = position.latitude + ", " + position.longitude + ", " + picturePath;
+            //String coordinates = position.latitude + ", " + position.longitude + ", " + picturePath;
 
-            writeToFile(coordinates);
+            markersTable.put(position.latitude + position.longitude, picturePath);
+            markersPosition.put(position.latitude, position.longitude);
 
-
-
-            /*Toast.makeText(getApplicationContext(),
-                    "Координаты: " + position.latitude + ", " + position.longitude,
-                    Toast.LENGTH_SHORT).show();*/
-
-            // В переменной picturePath будет лежать путь до выбранной фотографии
+            writeToFile();
         }
     }
 
-    private void writeToFile(String input)
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // Запись меток в файл при закрытии приложения
+        writeToFile();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Запись меток в файл при закрытии приложения
+        writeToFile();
+    }
+
+
+    private void writeToFile()
     {
         try
         {
             File file = new File(getFilesDir(),"data.txt");
             FileOutputStream outputStream = new FileOutputStream(file);
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream));
-
-            writer.write(input);
+            String line;
+            for (Map.Entry<Double, Double> item : markersPosition.entrySet())
+            {
+                 line = item.getKey() + ", " + item.getValue() + ", "
+                        + markersTable.get(item.getKey()+item.getValue()) + "\n";
+                writer.write(line);
+            }
             writer.close();
+
         } catch (IOException e) {
             Toast.makeText(MainActivity.this, "ERROR: " + e, Toast.LENGTH_SHORT).show();
         }

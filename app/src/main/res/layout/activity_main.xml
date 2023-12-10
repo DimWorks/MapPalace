@@ -156,7 +156,7 @@
             android:layout_height="50dp"
             android:layout_marginBottom="221dp"
             android:background="#FFFFFF"
-            android:hint="пароль"
+            android:hint="Введите пароль"
             android:paddingLeft="15dp"
             android:textColor="#918F8F"
             android:textSize="20dp"

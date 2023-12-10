@@ -467,10 +467,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mSearch.setVisibility(View.INVISIBLE);
                 mMarker = marker;
                 LatLng position = mMarker.getPosition();
-                ImageView mImage;
-                mImage = (ImageView) findViewById(R.id.users_picture);
-                mImage.setImageBitmap(BitmapFactory.decodeFile(
-                        markersTable.get(position.latitude + position.longitude)));
+
+                String pathToPhoto = markersTable.get(position.latitude + position.longitude);
+                File photo = new File(pathToPhoto);
+                if(photo.exists())
+                {
+                    ImageView mImage;
+                    mImage = (ImageView) findViewById(R.id.users_picture);
+                    mImage.setImageBitmap(BitmapFactory.decodeFile(pathToPhoto));
+                }
 
                 // Обработчик нажатия на кнопку "Удалить маркер"
                 Button mDelPic = findViewById(R.id.btm_del_marker);

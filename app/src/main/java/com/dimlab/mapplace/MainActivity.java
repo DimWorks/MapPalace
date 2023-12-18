@@ -277,6 +277,52 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+        //---
+        EditText tmpOldPass = findViewById(R.id.oldpass);
+        EditText mCountOldPass = findViewById(R.id.oldpass_count);
+
+        tmpOldPass.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // Не используется
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String password = charSequence.toString();
+                int length = password.length();
+                mCountOldPass.setText(length + "/20");
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                // Не используется
+            }
+        });
+
+        //---
+        EditText tmpNewPass = findViewById(R.id.newpass);
+        EditText mCountNewPass = findViewById(R.id.newpass_count);
+
+        tmpNewPass.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // Не используется
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String password = charSequence.toString();
+                int length = password.length();
+                mCountNewPass.setText(length + "/20");
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                // Не используется
+            }
+        });
+
         // Обработчик нажатия на кнопку отмены смены пароля
         Button mChangeCanel = findViewById(R.id.btm_change_canel);
         mChangeCanel.setOnClickListener(new View.OnClickListener() {

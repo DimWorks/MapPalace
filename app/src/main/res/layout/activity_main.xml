@@ -171,7 +171,6 @@
                 android:layout_centerVertical="true"
                 android:background="@null"
                 android:hint="Введите пароль"
-                android:imeOptions="actionSearch"
                 android:inputType="textPassword"
                 android:maxLength="20"
                 android:paddingLeft="15dp"
@@ -182,15 +181,15 @@
 
             <EditText
                 android:id="@+id/pass_count"
-                android:layout_toRightOf="@+id/password"
                 android:layout_width="70dp"
                 android:layout_height="match_parent"
                 android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/password"
                 android:background="@null"
-                android:inputType="none"
-                android:text="0/20"
                 android:imeOptions="actionSearch"
+                android:inputType="none"
                 android:paddingLeft="5dp"
+                android:text="0/20"
                 android:textColor="#aaa8ae"
                 android:textSize="20dp"
                 android:textStyle="bold" />
@@ -198,23 +197,6 @@
 
         </RelativeLayout>
 
-        <EditText
-            android:id="@+id/NOTpassword"
-            android:layout_width="350dp"
-            android:layout_height="50dp"
-            android:layout_marginBottom="221dp"
-            android:background="#FFFFFF"
-            android:hint="Введите пароль"
-            android:inputType="textPassword"
-            android:maxLength="8"
-            android:paddingLeft="15dp"
-            android:textColor="#918F8F"
-            android:textSize="20dp"
-            android:textStyle="bold"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
 
         <Button
             android:id="@+id/btm_enter"
@@ -243,7 +225,6 @@
             app:layout_constraintTop_toBottomOf="@+id/btm_enter" />
 
 
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -254,49 +235,102 @@
         android:visibility="invisible">
 
 
-        <EditText
-            android:id="@+id/oldpass"
+        <RelativeLayout
+            android:id="@+id/oldpass_layout"
             android:layout_width="350dp"
             android:layout_height="50dp"
             android:layout_marginTop="128dp"
-            android:background="#FFFFFF"
-            android:hint="Введите старый пароль"
-            android:inputType="textPassword"
-            android:maxLength="8"
-            android:paddingLeft="15dp"
-            android:textColor="#918F8F"
-            android:textSize="20dp"
-            android:textStyle="bold"
+            android:background="#fff"
+            android:elevation="10dp"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.491"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/my_logo" />
+            app:layout_constraintTop_toBottomOf="@+id/my_logo"
+            tools:ignore="MissingConstraints">
 
-        <EditText
-            android:id="@+id/newpass"
+            <EditText
+                android:id="@+id/oldpass"
+                android:layout_width="280dp"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:hint="Введите старый пароль"
+                android:inputType="textPassword"
+                android:maxLength="20"
+                android:paddingLeft="15dp"
+                android:privateImeOptions="actionSearch"
+                android:textColor="#000"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/oldpass_count"
+                android:layout_width="70dp"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/oldpass"
+                android:background="@null"
+                android:imeOptions="actionSearch"
+                android:inputType="none"
+                android:paddingLeft="5dp"
+                android:text="0/20"
+                android:textColor="#aaa8ae"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/newpass_layout"
             android:layout_width="350dp"
             android:layout_height="50dp"
             android:layout_marginTop="32dp"
-            android:background="#FFFFFF"
-            android:hint="Введите новый пароль"
-            android:inputType="textPassword"
-            android:maxLength="8"
-            android:paddingLeft="15dp"
-            android:textColor="#918F8F"
-            android:textSize="20dp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/oldpass" />
+            android:background="#fff"
+            android:elevation="10dp"
+            android:visibility="visible"
 
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/oldpass_layout"
+            tools:ignore="MissingConstraints">
+
+            <EditText
+                android:id="@+id/newpass"
+                android:layout_width="280dp"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:hint="Введите новый пароль"
+                android:inputType="textPassword"
+                android:maxLength="20"
+                android:paddingLeft="15dp"
+                android:privateImeOptions="actionSearch"
+                android:textColor="#000"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/newpass_count"
+                android:layout_width="70dp"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/newpass"
+                android:background="@null"
+                android:imeOptions="actionSearch"
+                android:inputType="none"
+                android:paddingLeft="5dp"
+                android:text="0/20"
+                android:textColor="#aaa8ae"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+        </RelativeLayout>
 
         <ImageView
             android:id="@+id/pic_change_pass"
             android:layout_width="520dp"
             android:layout_height="240dp"
             android:layout_marginBottom="32dp"
-            app:layout_constraintBottom_toTopOf="@+id/newpass"
+            app:layout_constraintBottom_toTopOf="@+id/newpass_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -322,7 +356,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/newpass" />
+            app:layout_constraintTop_toBottomOf="@+id/newpass_layout" />
 
         <Button
             android:id="@+id/btm_change_canel"

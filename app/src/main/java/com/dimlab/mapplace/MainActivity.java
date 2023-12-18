@@ -19,7 +19,9 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -90,6 +92,29 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Проверка разрешения на доступ к хранилищу
         verifyStoragePermissions(this);
 
+        //---
+        EditText tmpPass = findViewById(R.id.password);
+        EditText mCountPass = findViewById(R.id.pass_count);
+
+        tmpPass.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // Не используется
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String password = charSequence.toString();
+                int length = password.length();
+                mCountPass.setText(length + "/20");
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                // Не используется
+            }
+        });
+
         // Чтение пароля из EditText
         final EditText mPassword = findViewById(R.id.password);
         mPassword.setImeOptions(EditorInfo.IME_ACTION_SEND);
@@ -137,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mEnterScreen.setVisibility(View.INVISIBLE);
                     RelativeLayout mSearch = findViewById(R.id.search_layout);
                     mSearch.setVisibility(View.VISIBLE);
-                    Toast.makeText(MainActivity.this, "Добро пожаловать!!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Добро пожаловать!", Toast.LENGTH_SHORT).show();
                     StartApp();
                 } else {
                     ConstraintLayout mMapScreen = findViewById(R.id.map_screen);
@@ -268,10 +293,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Чтение пароля из EditText
         final EditText mOldpass = findViewById(R.id.oldpass);
         mOldpass.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        mPassword.setRawInputType(InputType.TYPE_CLASS_TEXT);
+        mOldpass.setRawInputType(InputType.TYPE_CLASS_TEXT);
         final EditText mNewpass = findViewById(R.id.newpass);
         mNewpass.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        mPassword.setRawInputType(InputType.TYPE_CLASS_TEXT);
+        mNewpass.setRawInputType(InputType.TYPE_CLASS_TEXT);
 
         // Обработчик нажатия на кнопку смены пароля
         Button mChange = findViewById(R.id.btm_change);

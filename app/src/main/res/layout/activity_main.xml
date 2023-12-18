@@ -106,6 +106,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/enter_screen"
         android:layout_width="match_parent"
@@ -150,17 +151,67 @@
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/picmap" />
 
+        <RelativeLayout
+            android:id="@+id/password_layout"
+            android:layout_width="350dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="222dp"
+            android:background="#fff"
+            android:elevation="10dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="MissingConstraints">
+
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="280dp"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:hint="Введите пароль"
+                android:imeOptions="actionSearch"
+                android:inputType="textPassword"
+                android:maxLength="20"
+                android:paddingLeft="15dp"
+                android:privateImeOptions="actionSearch"
+                android:textColor="#000"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/pass_count"
+                android:layout_toRightOf="@+id/password"
+                android:layout_width="70dp"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:inputType="none"
+                android:text="0/20"
+                android:imeOptions="actionSearch"
+                android:paddingLeft="5dp"
+                android:textColor="#aaa8ae"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+
+        </RelativeLayout>
+
         <EditText
-            android:id="@+id/password"
+            android:id="@+id/NOTpassword"
             android:layout_width="350dp"
             android:layout_height="50dp"
             android:layout_marginBottom="221dp"
             android:background="#FFFFFF"
             android:hint="Введите пароль"
+            android:inputType="textPassword"
+            android:maxLength="8"
             android:paddingLeft="15dp"
             android:textColor="#918F8F"
             android:textSize="20dp"
             android:textStyle="bold"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -177,7 +228,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/password" />
+            app:layout_constraintTop_toBottomOf="@+id/password_layout" />
 
         <Button
             android:id="@+id/btm_change_password"
@@ -192,6 +243,7 @@
             app:layout_constraintTop_toBottomOf="@+id/btm_enter" />
 
 
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -201,6 +253,7 @@
         android:background="@drawable/gradient_background"
         android:visibility="invisible">
 
+
         <EditText
             android:id="@+id/oldpass"
             android:layout_width="350dp"
@@ -208,6 +261,8 @@
             android:layout_marginTop="128dp"
             android:background="#FFFFFF"
             android:hint="Введите старый пароль"
+            android:inputType="textPassword"
+            android:maxLength="8"
             android:paddingLeft="15dp"
             android:textColor="#918F8F"
             android:textSize="20dp"
@@ -224,6 +279,8 @@
             android:layout_marginTop="32dp"
             android:background="#FFFFFF"
             android:hint="Введите новый пароль"
+            android:inputType="textPassword"
+            android:maxLength="8"
             android:paddingLeft="15dp"
             android:textColor="#918F8F"
             android:textSize="20dp"

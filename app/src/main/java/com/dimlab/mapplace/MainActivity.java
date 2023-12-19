@@ -73,21 +73,24 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private static final int REQUEST_PICK_IMAGE = 2;
 
-    private GoogleMap mMap;
+    public GoogleMap mMap;
     private Marker mMarker;
 
     private FusedLocationProviderClient mFusedLocationClient;
 
     private EditText searchEditText;
 
-    private HashMap<Double, String> markersTable = new HashMap<>();
-    private HashMap<Double, Double> markersPosition = new HashMap<>();
+    public HashMap<Double, String> markersTable = new HashMap<>();
+    public HashMap<Double, Double> markersPosition = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Проверка существования пароля
+        DoesFileExists();
 
         // Проверка разрешения на доступ к хранилищу
         verifyStoragePermissions(this);
@@ -143,12 +146,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View v)
             {
-                File mFile = new File(getFilesDir(), "hash.txt");
-                if(!mFile.exists())
-                {
-                    writeHashToFile(getHash("tur"));
-                }
-
                 String input = mPassword.getText().toString();
                 // Хэширование пароля
                 String hash = getHash(input);
@@ -178,6 +175,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             private void StartApp()
             {
                 try {
+
                     File file = new File(getFilesDir(), "data.txt");
                     if(!file.exists())
                     {
@@ -210,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
 
             // Хэширование пароля
-            public String getHash(String input)
+            /*public String getHash(String input)
             {
                 try
                 {
@@ -228,10 +226,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     //e.printStackTrace();
                     return null;
                 }
-            }
+            }*/
 
             // Запись хэша в файл
-            private void writeHashToFile(String hash)
+            /*private void writeHashToFile(String hash)
             {
                 try
                 {
@@ -244,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 } catch (IOException e) {
                     Toast.makeText(MainActivity.this, "ERROR: " + e, Toast.LENGTH_SHORT).show();
                 }
-            }
+            }*/
 
             // Получения хэша из файла
             private String readHashFromFile()
@@ -374,7 +372,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
 
             // Хэширование пароля
-            public String getHash(String input)
+            /*public String getHash(String input)
             {
                 try
                 {
@@ -390,10 +388,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Toast.makeText(MainActivity.this, "ERROR: " + e, Toast.LENGTH_SHORT).show();
                     return null;
                 }
-            }
+            }*/
 
             // Запись хэша в файл
-            private void writeHashToFile(String hash)
+            /*private void writeHashToFile(String hash)
             {
                 try
                 {
@@ -405,7 +403,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 } catch (IOException e) {
                     Toast.makeText(MainActivity.this, "ERROR: " + e, Toast.LENGTH_SHORT).show();
                 }
-            }
+            }*/
 
             // Получения хэша из файла
             private String readHashFromFile()
@@ -736,5 +734,135 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             Toast.makeText(MainActivity.this, "ERROR: " + e, Toast.LENGTH_SHORT).show();
         }
     }
-}
 
+    public String getHash(String input)
+    {
+        try
+        {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hashBytes = md.digest(input.getBytes());
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hashBytes)
+            {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e)
+        {
+            Toast.makeText(MainActivity.this, "ERROR: " + e, Toast.LENGTH_SHORT).show();
+            //e.printStackTrace();
+            return null;
+        }
+    }
+
+    private void DoesFileExists()
+    {
+        File mFile = new File(getFilesDir(), "hash.txt");
+        if(!mFile.exists())
+        {
+            MakePassvord();
+            //writeHashToFile(getHash("tur"));
+        }
+    }
+
+    private void MakePassvord()
+    {
+        ConstraintLayout mMakePassword = findViewById(R.id.make_passord);
+        mMakePassword.setVisibility(View.VISIBLE);
+        EditText tmpFstPass = findViewById(R.id.fstpass);
+        EditText mCountFstPass = findViewById(R.id.fstpass_count);
+
+        tmpFstPass.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // Не используется
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String password = charSequence.toString();
+                int length = password.length();
+                mCountFstPass.setText(length + "/20");
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                // Не используется
+            }
+        });
+
+        EditText tmpSndPass = findViewById(R.id.sndpass);
+        EditText mCountSndPass = findViewById(R.id.sndpass_count);
+
+        tmpSndPass.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // Не используется
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String password = charSequence.toString();
+                int length = password.length();
+                mCountSndPass.setText(length + "/20");
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                // Не используется
+            }
+        });
+
+        // Чтение пароля из EditText
+        final EditText mFstPass = findViewById(R.id.fstpass);
+        mFstPass.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        mFstPass.setRawInputType(InputType.TYPE_CLASS_TEXT);
+        final EditText mSndPass = findViewById(R.id.sndpass);
+        mSndPass.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        mSndPass.setRawInputType(InputType.TYPE_CLASS_TEXT);
+
+        Button mMakePass = findViewById(R.id.btm_make);
+
+        mMakePass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(mFstPass.getText().toString().equals(mSndPass.getText().toString()))
+                {
+                    writeHashToFile(getHash(mSndPass.getText().toString()));
+                    ConstraintLayout mMakePassword = findViewById(R.id.make_passord);
+                    mMakePassword.setVisibility(View.INVISIBLE);
+                    Toast.makeText(MainActivity.this, "Пароль был задан", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "Пароли не совпадают!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        Button mMakeCanel = findViewById(R.id.btm_make_canel);
+
+        mMakeCanel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ConstraintLayout mMakePassword = findViewById(R.id.make_passord);
+                mMakePassword.setVisibility(View.INVISIBLE);
+            }
+        });
+    }
+
+    // Запись хэша в файл
+    private void writeHashToFile(String hash)
+    {
+        try
+        {
+            File file = new File(getFilesDir(), "hash.txt");
+            FileOutputStream outputStream = new FileOutputStream(file, false);
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream));
+            writer.write(hash);
+            writer.close();
+        } catch (IOException e) {
+            Toast.makeText(MainActivity.this, "ERROR: " + e, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+}

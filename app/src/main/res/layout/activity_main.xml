@@ -327,10 +327,10 @@
 
         <ImageView
             android:id="@+id/pic_change_pass"
-            android:layout_width="520dp"
-            android:layout_height="240dp"
-            android:layout_marginBottom="32dp"
-            app:layout_constraintBottom_toTopOf="@+id/newpass_layout"
+            android:layout_width="413dp"
+            android:layout_height="113dp"
+            android:layout_marginBottom="3dp"
+            app:layout_constraintBottom_toTopOf="@+id/oldpass_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -369,6 +369,151 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btm_change" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/make_passord"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/gradient_background"
+        android:visibility="invisible">
+
+
+        <RelativeLayout
+            android:id="@+id/fstpass_layout"
+            android:layout_width="350dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="128dp"
+            android:background="#fff"
+            android:elevation="10dp"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/my_logo_again"
+            tools:ignore="MissingConstraints">
+
+            <EditText
+                android:id="@+id/fstpass"
+                android:layout_width="280dp"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:hint="Введите пароль"
+                android:inputType="textPassword"
+                android:maxLength="20"
+                android:paddingLeft="15dp"
+                android:privateImeOptions="actionSearch"
+                android:textColor="#000"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/fstpass_count"
+                android:layout_width="70dp"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/fstpass"
+                android:background="@null"
+                android:imeOptions="actionSearch"
+                android:inputType="none"
+                android:paddingLeft="5dp"
+                android:text="0/20"
+                android:textColor="#aaa8ae"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/sndpass_layout"
+            android:layout_width="350dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="32dp"
+            android:background="#fff"
+            android:elevation="10dp"
+            android:visibility="visible"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fstpass_layout"
+            tools:ignore="MissingConstraints">
+
+            <EditText
+                android:id="@+id/sndpass"
+                android:layout_width="280dp"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:hint="Повторите пароль"
+                android:inputType="textPassword"
+                android:maxLength="20"
+                android:paddingLeft="15dp"
+                android:privateImeOptions="actionSearch"
+                android:textColor="#000"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/sndpass_count"
+                android:layout_width="70dp"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/sndpass"
+                android:background="@null"
+                android:imeOptions="actionSearch"
+                android:inputType="none"
+                android:paddingLeft="5dp"
+                android:text="0/20"
+                android:textColor="#aaa8ae"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/pic_make_pass"
+            android:layout_width="401dp"
+            android:layout_height="108dp"
+            android:layout_marginBottom="3dp"
+            app:layout_constraintBottom_toTopOf="@+id/fstpass_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/make_password" />
+
+        <ImageView
+            android:id="@+id/my_logo_again"
+            android:layout_width="105dp"
+            android:layout_height="110dp"
+            android:layout_marginTop="28dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/logo_black" />
+
+        <Button
+            android:id="@+id/btm_make"
+            android:layout_width="330dp"
+            android:layout_height="53dp"
+            android:layout_marginTop="50dp"
+            android:text="Задать пароль"
+            android:textSize="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sndpass_layout" />
+
+        <Button
+            android:id="@+id/btm_make_canel"
+            android:layout_width="330dp"
+            android:layout_height="53dp"
+            android:layout_marginTop="15dp"
+            android:text="Отмена"
+            android:textSize="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btm_make" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
